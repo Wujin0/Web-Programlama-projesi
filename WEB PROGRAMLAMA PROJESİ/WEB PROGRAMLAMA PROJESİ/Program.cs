@@ -5,23 +5,23 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Veritabaný Baðlantýsý (SQL Server)
+// 1. Veritabanï¿½ Baï¿½lantï¿½sï¿½ (SQL Server)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 2. Identity (Üyelik) Servisi
+// 2. Identity (ï¿½yelik) Servisi
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// --- ADIM 1: ÞÝFRE KURALLARINI ESNETME (BURASI YENÝ) ---
-// Admin þifresi "sau" olabilsin diye kurallarý gevþetiyoruz.
+// --- ADIM 1: ï¿½ï¿½FRE KURALLARINI ESNETME (BURASI YENï¿½) ---
+// Admin ï¿½ifresi "sau" olabilsin diye kurallarï¿½ gevï¿½etiyoruz.
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.Password.RequireDigit = false;          // Rakam zorunluluðu yok
-    options.Password.RequireLowercase = false;      // Küçük harf zorunluluðu yok
-    options.Password.RequireUppercase = false;      // Büyük harf zorunluluðu yok
-    options.Password.RequireNonAlphanumeric = false;// Sembol (!,*,.) zorunluluðu yok
+    options.Password.RequireDigit = false;          // Rakam zorunluluï¿½u yok
+    options.Password.RequireLowercase = false;      // Kï¿½ï¿½ï¿½k harf zorunluluï¿½u yok
+    options.Password.RequireUppercase = false;      // Bï¿½yï¿½k harf zorunluluï¿½u yok
+    options.Password.RequireNonAlphanumeric = false;// Sembol (!,*,.) zorunluluï¿½u yok
     options.Password.RequiredLength = 3;            // En az 3 karakter yeterli
 });
 // --------------------------------------------------------
@@ -30,7 +30,7 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// HTTP request pipeline ayarlarý
+// HTTP request pipeline ayarlarï¿½
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -42,17 +42,17 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // Kimlik doðrulama (Giriþ yapma)
-app.UseAuthorization();  // Yetkilendirme (Rol kontrolü)
+app.UseAuthentication(); // Kimlik doï¿½rulama (Giriï¿½ yapma)
+app.UseAuthorization();  // Yetkilendirme (Rol kontrolï¿½)
 
-// --- SEED DATA (OTOMATÝK ADMÝN) ---
-// Bu kýsmý bir sonraki adýmda ekleyeceðiz ama þimdilik yerini hazýr tutuyoruz.
-// Eðer DbSeeder kodunu yazdýysan buraya eklemeyi unutma.
+// --- SEED DATA (OTOMATï¿½K ADMï¿½N) ---
+// Bu kï¿½smï¿½ bir sonraki adï¿½mda ekleyeceï¿½iz ama ï¿½imdilik yerini hazï¿½r tutuyoruz.
+// Eï¿½er DbSeeder kodunu yazdï¿½ysan buraya eklemeyi unutma.
 // ----------------------------------
 
 
 
-// Admin Paneli Rotasý
+// Admin Paneli Rotasï¿½
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
@@ -67,23 +67,21 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// --- SEED DATA BAÞLANGIÇ ---
+// --- SEED DATA BAÅžLANGI ---
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    // Hata olursa program patlamasýn diye try-catch içine alýyoruz
+    // Hata olursa program patlmasÄ±n diye try-catch iÃ§ine alÄ±yoruz
     try
     {
         await FitnessApp.Data.DbSeeder.SeedRolesAndAdminAsync(services);
     }
     catch (Exception ex)
     {
-        // Ýleride loglama yapýlabilir, þimdilik boþ geçelim.
+        // Ä°leride loglama yapÄ±labilir, ÅŸimdilik boÅŸ geÃ§elim.
         Console.WriteLine(ex.Message);
     }
 }
-// --- SEED DATA BÝTÝÞ ---
-
-app.Run(); // Bu satýr zaten vardý, kodlarý bunun ÜSTÜNE ekle.
+// --- SEED DATA BÄ°TÄ°Åž ---
 
 app.Run();

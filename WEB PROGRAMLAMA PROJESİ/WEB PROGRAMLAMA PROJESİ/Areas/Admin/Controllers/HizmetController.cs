@@ -10,7 +10,7 @@ using FitnessApp.Models;
 using Microsoft.AspNetCore.Authorization;
 
 // Namespace'i Areas.Admin olarak düzelttim, doğrusu budur.
-namespace WEB_PROGRAMLAMA_PROJESİ.Areas.Admin.Controllers
+namespace FitnessApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]

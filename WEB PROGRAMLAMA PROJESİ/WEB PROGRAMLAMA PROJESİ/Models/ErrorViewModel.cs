@@ -1,4 +1,4 @@
-namespace WEB_PROGRAMLAMA_PROJESİ.Models
+namespace FitnessApp.Models
 {
     public class ErrorViewModel
     {

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using WEB_PROGRAMLAMA_PROJESİ.Models;
+using FitnessApp.Models;
 
-namespace WEB_PROGRAMLAMA_PROJESİ.Controllers
+namespace FitnessApp.Controllers
 {
     public class HomeController : Controller
     {

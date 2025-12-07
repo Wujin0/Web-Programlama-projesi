@@ -8,7 +8,7 @@ using FitnessApp.Data;
 using FitnessApp.Models;
 using Microsoft.AspNetCore.Authorization;
 
-namespace WEB_PROGRAMLAMA_PROJESİ.Areas.Admin.Controllers
+namespace FitnessApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
