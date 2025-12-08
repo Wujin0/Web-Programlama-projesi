@@ -10,16 +10,14 @@
                     <h4 class="mb-0"><i class="bi bi-robot"></i> Yapay Zeka Analizi</h4>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted">Vücut ölçülerini gir, Yapay Zeka sana özel program çıkarsın.</p>
-
                     <form asp-action="Index" method="post">
                         <div class="mb-3">
-                            <label class="form-label">Boyunuz (cm)</label>
-                            <input type="number" name="boy" class="form-control" placeholder="Örn: 180" value="@ViewBag.GirisBoy" required />
+                            <label class="form-label">Boy (cm)</label>
+                            <input type="number" name="boy" class="form-control" value="@ViewBag.GirisBoy" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Kilonuz (kg)</label>
-                            <input type="number" name="kilo" class="form-control" placeholder="Örn: 75" value="@ViewBag.GirisKilo" required step="0.1" />
+                            <label class="form-label">Kilo (kg)</label>
+                            <input type="number" name="kilo" class="form-control" value="@ViewBag.GirisKilo" required step="0.1" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Cinsiyet</label>
@@ -29,16 +27,13 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Hedefin Ne?</label>
+                            <label class="form-label">Hedef</label>
                             <select name="hedef" class="form-control">
                                 <option value="fit">Form Tutmak / Zayıflamak</option>
                                 <option value="kas">Kas Yapmak</option>
                             </select>
                         </div>
-
-                        <button type="submit" class="btn btn-primary w-100 fw-bold">
-                            Asistana Sor 🤖
-                        </button>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">Asistana Sor 🤖</button>
                     </form>
                 </div>
             </div>
@@ -50,13 +45,25 @@
                 <div class="card shadow border-0 h-100">
                     <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">Gemini AI Analizi</h4>
-                        <span class="badge bg-warning text-dark">Yapay Zeka Destekli</span>
+                        <span class="badge bg-warning text-dark">Destekli</span>
                     </div>
                     <div class="card-body">
+
+                        @if (!string.IsNullOrEmpty(ViewBag.ResimUrl))
+                        {
+                            <div class="mb-4 text-center">
+                                <img src="@ViewBag.ResimUrl" class="img-fluid rounded shadow-sm border" style="max-height: 300px; object-fit: cover;">
+                            </div>
+                        }
+
                         <div class="p-3 bg-light rounded border">
-                            @if (ViewBag.Sonuc != null)
+                            @if (ViewBag.SonucMetni != null)
                             {
-                                @Html.Raw(ViewBag.Sonuc.Replace("\n", "<br>"))
+                                @Html.Raw(ViewBag.SonucMetni)
+                            }
+                            else
+                            {
+                                <span class="text-danger">Sonuç hesaplanamadı.</span>
                             }
                         </div>
 
@@ -73,8 +80,7 @@
                 <div class="d-flex align-items-center justify-content-center h-100 bg-light rounded text-center p-5">
                     <div>
                         <h1 class="display-4 text-muted"><i class="bi bi-robot"></i></h1>
-                        <h3 class="text-muted">AI Antrenör Hazır</h3>
-                        <p class="text-muted">Sol taraftan bilgilerinizi girin, Yapay Zeka size özel program hazırlasın.</p>
+                        <p class="text-muted">Bilgilerini gir, programını al.</p>
                     </div>
                 </div>
             }
