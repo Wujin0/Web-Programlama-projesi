@@ -1,0 +1,51 @@
+﻿@model FitnessApp.Models.Randevu
+
+@{
+    ViewData["Title"] = "Randevu Al";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-calendar-plus"></i> Yeni Randevu Al</h4>
+                </div>
+                <div class="card-body">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <form asp-action="Al">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tarih ve Saat</label>
+                            <input asp-for="TarihSaat" class="form-control" type="datetime-local"
+                                   value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                            <span asp-validation-for="TarihSaat" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Eğitmen Seçin</label>
+                            <select asp-for="AntrenorId" class="form-select" asp-items="ViewBag.AntrenorId">
+                                <option value="">-- Bir Eğitmen Seçin --</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Hizmet Seçin</label>
+                            <select asp-for="HizmetId" class="form-select" asp-items="ViewBag.HizmetId">
+                                <option value="">-- Bir Hizmet Seçin --</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> Randevuyu Onayla
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

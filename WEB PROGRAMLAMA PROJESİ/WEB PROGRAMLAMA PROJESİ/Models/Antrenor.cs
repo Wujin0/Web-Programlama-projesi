@@ -1,13 +1,31 @@
-﻿namespace FitnessApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FitnessApp.Models
 {
     public class Antrenor
     {
+        [Key]
         public int AntrenorId { get; set; }
+
+        [Required(ErrorMessage = "Ad Soyad zorunludur.")]
+        [Display(Name = "Ad Soyad")]
         public string AdSoyad { get; set; }
-        public string UzmanlikAlani { get; set; } // Örn: Fitness, Yoga
+
+        [Required(ErrorMessage = "Uzmanlık alanı zorunludur.")]
+        [Display(Name = "Uzmanlık Alanı")]
+        public string UzmanlikAlani { get; set; }
+
+        [Display(Name = "Fotoğraf")]
         public string? FotoUrl { get; set; }
 
+        // --- YENİ EKLENEN ÖZELLİKLER: ÇALIŞMA SAATLERİ ---
+        [Display(Name = "Mesai Başlangıç")]
+        public string CalismaSaatiBaslangic { get; set; } = "09:00"; // Varsayılan
+
+        [Display(Name = "Mesai Bitiş")]
+        public string CalismaSaatiBitis { get; set; } = "17:00"; // Varsayılan
+
         // İlişkiler
-        public ICollection<Randevu> Randevular { get; set; }
+        public List<Randevu>? Randevular { get; set; }
     }
 }

@@ -1,36 +1,33 @@
 ﻿@model FitnessApp.Models.Hizmet
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detaylar";
 }
 
-<h1>Details</h1>
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-info text-white">
+            <h4 class="mb-0"><i class="bi bi-info-circle"></i> Hizmet Detayları</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0 fs-5">
+                <dt class="col-sm-3 text-muted">Hizmet Adı:</dt>
+                <dd class="col-sm-9 fw-bold">@Html.DisplayFor(model => model.Ad)</dd>
 
-<div>
-    <h4>Hizmet</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ad)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ad)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SureDk)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SureDk)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ucret)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ucret)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.HizmetId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+                <dt class="col-sm-3 text-muted">Süre:</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.SureDk) Dakika</dd>
+
+                <dt class="col-sm-3 text-muted">Ücret:</dt>
+                <dd class="col-sm-9 text-success">@Html.DisplayFor(model => model.Ucret) TL</dd>
+            </dl>
+        </div>
+        <div class="card-footer bg-white border-0">
+            <a asp-action="Edit" asp-route-id="@Model?.HizmetId" class="btn btn-warning btn-lg px-4">
+                <i class="bi bi-pencil"></i> Düzenle
+            </a>
+            <a asp-action="Index" class="btn btn-secondary btn-lg px-4">
+                <i class="bi bi-arrow-left"></i> Listeye Dön
+            </a>
+        </div>
+    </div>
 </div>

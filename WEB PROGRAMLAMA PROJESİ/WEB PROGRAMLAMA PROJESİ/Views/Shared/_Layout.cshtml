@@ -1,49 +1,119 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WEB_PROGRAMLAMA_PROJESİ</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>@ViewData["Title"] - FitnessApp</title>
+
+    <link rel="stylesheet" href="https://bootswatch.com/5/lux/bootstrap.min.css" />
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/WEB_PROGRAMLAMA_PROJESİ.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FitnessApp.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WEB_PROGRAMLAMA_PROJESİ</a>
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-activity"></i> FitnessApp
+                </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Anasayfa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik</a>
                         </li>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Randevu" asp-action="Al">Randevu Al</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Randevu" asp-action="Randevularim">Randevularım</a>
+                            </li>
+
+                            <li class="nav-item ms-lg-2">
+                                <a class="nav-link btn btn-outline-light text-white fw-bold px-3" asp-area="" asp-controller="Ai" asp-action="Index">
+                                    <i class="bi bi-robot"></i> Asistana Sor
+                                </a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item ms-lg-auto">
+                                <a class="nav-link text-warning fw-bold border border-warning rounded px-2" asp-area="Admin" asp-controller="Hizmet" asp-action="Index">YÖNETİCİ PANELİ</a>
+                            </li>
+                        }
                     </ul>
+
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - WEB_PROGRAMLAMA_PROJESİ - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted mt-5">
+        <div class="container text-center py-3">
+            &copy; 2025 - FitnessApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik Politikası</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Razor verilerini JavaScript değişkenlerine aktarıyoruz.
+        // Bu yöntem parantez hatasını önler.
+        var basariliMesaj = '@TempData["Basarili"]';
+        var hataMesaj = '@TempData["Hata"]';
+
+        // Eğer başarılı mesajı varsa Yeşil Tik göster
+        if (basariliMesaj) {
+            Swal.fire({
+                title: 'Başarılı!',
+                text: basariliMesaj,
+                icon: 'success',
+                confirmButtonText: 'Tamam',
+                confirmButtonColor: '#28a745'
+            });
+        }
+
+        // Eğer hata mesajı varsa Kırmızı Çarpı göster
+        if (hataMesaj) {
+            Swal.fire({
+                title: 'Bir Sorun Oluştu',
+                text: hataMesaj,
+                icon: 'error',
+                confirmButtonText: 'Tamam',
+                confirmButtonColor: '#dc3545'
+            });
+        }
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

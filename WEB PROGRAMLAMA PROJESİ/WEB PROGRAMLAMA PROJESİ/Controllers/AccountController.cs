@@ -50,5 +50,62 @@ namespace FitnessApp.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        // ==========================================
+        // KAYIT OLMA (REGISTER) İŞLEMLERİ
+        // ==========================================
+
+        // 1. Kayıt Sayfasını Göster (GET)
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        // 2. Kayıt İşlemini Yap (POST)
+        [HttpPost]
+        public async Task<IActionResult> Register(string ad, string soyad, string email, string password)
+        {
+            // Basit validasyon
+            if (string.IsNullOrEmpty(ad) || string.IsNullOrEmpty(soyad) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            {
+                ViewBag.Error = "Lütfen tüm alanları doldurunuz.";
+                return View();
+            }
+
+            // Yeni kullanıcı nesnesi oluştur
+            var user = new AppUser
+            {
+                UserName = email, // Kullanıcı adı email olsun
+                Email = email,
+                Ad = ad,
+                Soyad = soyad,
+                EmailConfirmed = true, // Email doğrulama ile uğraşmamak için direkt onaylıyoruz
+                DogumTarihi = DateTime.Now // Zorunlu alan hatası vermesin diye şimdilik atıyoruz
+            };
+
+            // Kullanıcıyı oluştur (Şifreyi hashleyerek kaydeder)
+            var result = await _userManager.CreateAsync(user, password);
+
+            if (result.Succeeded)
+            {
+                // Başarılıysa kullanıcıya "Uye" rolünü ver
+                await _userManager.AddToRoleAsync(user, "Uye");
+
+                // Otomatik giriş yaptır
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
+                // Anasayfaya gönder
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Hata varsa (örn: şifre çok basitse) hatayı ekrana yaz
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            return View();
+        }
     }
 }

@@ -1,0 +1,66 @@
+﻿@model IEnumerable<FitnessApp.Models.Randevu>
+
+@{
+    ViewData["Title"] = "Randevu Yönetimi";
+}
+
+<div class="container-fluid mt-4">
+    <div class="btn-group shadow-sm mb-4 w-100">
+        <a asp-area="Admin" asp-controller="Hizmet" asp-action="Index" class="btn btn-outline-primary fw-bold">🏋️ Hizmetler</a>
+        <a asp-area="Admin" asp-controller="Antrenor" asp-action="Index" class="btn btn-outline-primary fw-bold">💪 Antrenörler</a>
+        <a asp-area="Admin" asp-controller="Randevu" asp-action="Index" class="btn btn-primary active fw-bold">📅 Randevu Talepleri</a>
+    </div>
+
+    <h3 class="text-primary fw-bold mb-3">Randevu Merkezi</h3>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th class="ps-3">Tarih</th>
+                        <th>Üye</th>
+                        <th>Eğitmen / Hizmet</th>
+                        <th>Durum</th>
+                        <th class="text-end pe-3">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-3 fw-bold">@item.TarihSaat.ToString("dd.MM HH:mm")</td>
+                            <td>@(item.User?.UserName ?? "Misafir")</td>
+                            <td>@item.Antrenor?.AdSoyad <br /> <small class="text-muted">@item.Hizmet?.Ad</small></td>
+                            <td>
+                                @if (item.OnaylandiMi)
+                                {
+                                    <span class="badge bg-success">Onaylı</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Bekliyor</span>
+                                }
+                            </td>
+                            <td class="text-end pe-3">
+                                @if (!item.OnaylandiMi)
+                                {
+                                    <form asp-action="Onayla" asp-route-id="@item.RandevuId" method="post" class="d-inline">
+                                        <button class="btn btn-sm btn-success">Onayla</button>
+                                    </form>
+                                }
+                                <form asp-action="Sil" asp-route-id="@item.RandevuId" method="post" class="d-inline">
+                                    <button class="btn btn-sm btn-danger" onclick="return confirm('Silinsin mi?')">Sil</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if (!Model.Any())
+            {
+                <div class="p-4 text-center text-muted">Bekleyen randevu yok.</div>
+            }
+        </div>
+    </div>
+</div>

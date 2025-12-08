@@ -1,8 +1,115 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model FitnessApp.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Anasayfa";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="p-5 mb-4 bg-dark rounded-3 text-white" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop'); background-size: cover; background-position: center;">
+    <div class="container-fluid py-5">
+        <h1 class="display-4 fw-bold">Potansiyelini Keşfet</h1>
+        <p class="col-md-8 fs-4">Uzman antrenörler ve profesyonel ekipmanlarla hedefine ulaş. Yapay zeka destekli programlarımızla tanış.</p>
+
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Account" asp-action="Register" class="btn btn-warning btn-lg fw-bold me-2">Üye Ol</a>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">Giriş Yap</a>
+        }
+        else
+        {
+            <a asp-controller="Randevu" asp-action="Al" class="btn btn-success btn-lg fw-bold">Randevu Al</a>
+        }
+    </div>
+</div>
+
+<div class="container mb-5">
+    <h2 class="text-center mb-4 text-primary fw-bold">Hizmetlerimiz</h2>
+    <div class="row text-center">
+        @if (Model.Hizmetler.Any())
+        {
+            @foreach (var hizmet in Model.Hizmetler)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="fs-1 text-primary mb-3">
+                                <i class="bi bi-activity"></i>
+                            </div>
+                            <h3 class="card-title fw-bold">@hizmet.Ad</h3>
+                            <p class="card-text text-muted">Süre: @hizmet.SureDk dk</p>
+                            <h4 class="text-success fw-bold">@hizmet.Ucret ₺</h4>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 mb-3">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a asp-controller="Randevu" asp-action="Al" class="btn btn-outline-primary w-100">Randevu Al</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-warning text-center">Henüz eklenmiş bir hizmet yok. Admin panelinden ekleyiniz.</div>
+        }
+    </div>
+</div>
+
+<div class="container mb-5">
+    <h2 class="text-center mb-4 text-primary fw-bold">Uzman Kadromuz</h2>
+    <div class="row">
+        @if (Model.Egitmenler.Any())
+        {
+            @foreach (var hoca in Model.Egitmenler)
+            {
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card shadow-sm h-100 border-0">
+                        @if (!string.IsNullOrEmpty(hoca.FotoUrl))
+                        {
+                            <img src="@hoca.FotoUrl" class="card-img-top" alt="@hoca.AdSoyad" style="height: 250px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <img src="https://via.placeholder.com/250x250?text=Antrenor" class="card-img-top" style="height: 250px; object-fit: cover;">
+                        }
+
+                        <div class="card-body text-center">
+                            <h5 class="card-title fw-bold mb-1">@hoca.AdSoyad</h5>
+                            <span class="badge bg-primary mb-3">@hoca.UzmanlikAlani</span>
+
+                            <div class="d-flex justify-content-center align-items-center bg-light p-2 rounded mt-2">
+                                <i class="bi bi-clock-fill text-warning me-2"></i>
+                                <span class="fw-bold text-muted small">@hoca.CalismaSaatiBaslangic - @hoca.CalismaSaatiBitis</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-warning text-center">Henüz eğitmen eklenmemiş.</div>
+        }
+    </div>
+</div>
+
+<div class="bg-light p-5 rounded-3 mb-5 border">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold">Yapay Zeka Destekli Program</h2>
+            <p class="lead text-muted">Vücut ölçülerini gir, Google Gemini sana en uygun programı çıkarsın.</p>
+        </div>
+        <div class="col-md-4 text-end">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Ai" asp-action="Index" class="btn btn-dark btn-lg fw-bold shadow">
+                    <i class="bi bi-robot"></i> Asistana Sor
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-dark btn-lg">Giriş Yap</a>
+            }
+        </div>
+    </div>
 </div>

@@ -1,47 +1,53 @@
 ﻿@model IEnumerable<FitnessApp.Models.Hizmet>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Hizmet Listesi";
 }
 
-<h1>Index</h1>
+<div class="container-fluid mt-4">
+    <div class="btn-group shadow-sm mb-4 w-100">
+        <a asp-area="Admin" asp-controller="Hizmet" asp-action="Index" class="btn btn-primary active fw-bold">🏋️ Hizmetler</a>
+        <a asp-area="Admin" asp-controller="Antrenor" asp-action="Index" class="btn btn-outline-primary fw-bold">💪 Antrenörler</a>
+        <a asp-area="Admin" asp-controller="Randevu" asp-action="Index" class="btn btn-outline-primary fw-bold">📅 Randevu Talepleri</a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Ad)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SureDk)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ucret)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ad)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SureDk)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ucret)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.HizmetId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.HizmetId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.HizmetId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="text-primary fw-bold">Hizmet Yönetimi</h3>
+        <a asp-action="Create" class="btn btn-success shadow-sm">
+            <i class="bi bi-plus-circle"></i> Yeni Hizmet Ekle
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th class="ps-3">Hizmet Adı</th>
+                        <th>Süre</th>
+                        <th>Ücret</th>
+                        <th class="text-end pe-3">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-3 fw-bold">@item.Ad</td>
+                            <td>@item.SureDk dk</td>
+                            <td class="text-success fw-bold">@item.Ucret ₺</td>
+                            <td class="text-end pe-3">
+                                <a asp-action="Edit" asp-route-id="@item.HizmetId" class="btn btn-sm btn-warning">Düzenle</a>
+                                <a asp-action="Delete" asp-route-id="@item.HizmetId" class="btn btn-sm btn-danger">Sil</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if (!Model.Any())
+            {
+                <div class="p-4 text-center text-muted">Kayıt yok.</div>
+            }
+        </div>
+    </div>
+</div>

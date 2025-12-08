@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "AI Antrenör";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-robot"></i> Yapay Zeka Analizi</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Vücut ölçülerini gir, Yapay Zeka sana özel program çıkarsın.</p>
+
+                    <form asp-action="Index" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Boyunuz (cm)</label>
+                            <input type="number" name="boy" class="form-control" placeholder="Örn: 180" value="@ViewBag.GirisBoy" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kilonuz (kg)</label>
+                            <input type="number" name="kilo" class="form-control" placeholder="Örn: 75" value="@ViewBag.GirisKilo" required step="0.1" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cinsiyet</label>
+                            <select name="cinsiyet" class="form-control">
+                                <option value="Erkek">Erkek</option>
+                                <option value="Kadin">Kadın</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Hedefin Ne?</label>
+                            <select name="hedef" class="form-control">
+                                <option value="fit">Form Tutmak / Zayıflamak</option>
+                                <option value="kas">Kas Yapmak</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">
+                            Asistana Sor 🤖
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            @if (ViewBag.SonucVar == true)
+            {
+                <div class="card shadow border-0 h-100">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Gemini AI Analizi</h4>
+                        <span class="badge bg-warning text-dark">Yapay Zeka Destekli</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="p-3 bg-light rounded border">
+                            @if (ViewBag.Sonuc != null)
+                            {
+                                @Html.Raw(ViewBag.Sonuc.Replace("\n", "<br>"))
+                            }
+                        </div>
+
+                        <div class="mt-4 text-center">
+                            <a asp-controller="Randevu" asp-action="Al" class="btn btn-outline-dark">
+                                <i class="bi bi-calendar-check"></i> Hemen Program Yapalım
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex align-items-center justify-content-center h-100 bg-light rounded text-center p-5">
+                    <div>
+                        <h1 class="display-4 text-muted"><i class="bi bi-robot"></i></h1>
+                        <h3 class="text-muted">AI Antrenör Hazır</h3>
+                        <p class="text-muted">Sol taraftan bilgilerinizi girin, Yapay Zeka size özel program hazırlasın.</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
