@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>FitnessApp</RootNamespace>
+    <UserSecretsId>d287fdb4-07e9-48ba-92da-11d74e491053</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
