@@ -22,6 +22,7 @@ namespace FitnessApp.Controllers
 
         public IActionResult Al()
         {
+            // Dropdownları doldur
             ViewData["AntrenorId"] = new SelectList(_context.Antrenorler, "AntrenorId", "AdSoyad");
             ViewData["HizmetId"] = new SelectList(_context.Hizmetler, "HizmetId", "Ad");
             return View();
@@ -31,13 +32,30 @@ namespace FitnessApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Al([Bind("RandevuId,TarihSaat,AntrenorId,HizmetId")] Randevu randevu)
         {
+            // Validasyon temizliği
             ModelState.Remove("User");
             ModelState.Remove("UserId");
             ModelState.Remove("Antrenor");
             ModelState.Remove("Hizmet");
 
+            // --- YENİ EKLENEN KISIM: BOŞ KONTROLÜ ---
+            // Eğer kullanıcı seçim yapmazsa değer 0 gelir.
+            if (randevu.AntrenorId == 0)
+            {
+                TempData["Hata"] = "Lütfen listeden bir <b>Eğitmen</b> seçiniz.";
+                return ListeleriDoldurVeDondur(randevu);
+            }
+
+            if (randevu.HizmetId == 0)
+            {
+                TempData["Hata"] = "Lütfen almak istediğiniz <b>Hizmeti</b> seçiniz.";
+                return ListeleriDoldurVeDondur(randevu);
+            }
+            // ----------------------------------------
+
             if (ModelState.IsValid)
             {
+                // KURAL 1: GEÇMİŞ TARİH KONTROLÜ
                 if (randevu.TarihSaat < DateTime.Now)
                 {
                     TempData["Hata"] = "Geçmiş bir tarihe randevu alamazsınız.";
@@ -47,19 +65,23 @@ namespace FitnessApp.Controllers
                 var secilenAntrenor = await _context.Antrenorler.FindAsync(randevu.AntrenorId);
                 var secilenHizmet = await _context.Hizmetler.FindAsync(randevu.HizmetId);
 
-                if (secilenAntrenor == null || secilenHizmet == null) return NotFound();
+                if (secilenAntrenor == null || secilenHizmet == null)
+                {
+                    TempData["Hata"] = "Seçim hatalı. Lütfen sayfayı yenileyip tekrar deneyin.";
+                    return ListeleriDoldurVeDondur(randevu);
+                }
 
-                // 1. UZMANLIK KONTROLÜ
+                // UZMANLIK KONTROLÜ
                 string hocaUzmanlik = secilenAntrenor.UzmanlikAlani.ToLower();
                 string hizmetAdi = secilenHizmet.Ad.ToLower();
 
                 if (!hocaUzmanlik.Contains(hizmetAdi))
                 {
-                    TempData["Hata"] = $"Seçtiğiniz antrenör ({secilenAntrenor.AdSoyad}) '{secilenHizmet.Ad}' dersi vermiyor. Uzmanlık alanı: {secilenAntrenor.UzmanlikAlani}";
+                    TempData["Hata"] = $"Seçtiğiniz antrenör ({secilenAntrenor.AdSoyad}) <b>'{secilenHizmet.Ad}'</b> dersi vermiyor.<br>Uzmanlık alanı: {secilenAntrenor.UzmanlikAlani}";
                     return ListeleriDoldurVeDondur(randevu);
                 }
 
-                // 2. DETAYLI SAAT HESAPLAMASI
+                // SAAT KONTROLÜ
                 TimeSpan randevuBaslangic = randevu.TarihSaat.TimeOfDay;
                 TimeSpan hizmetSuresi = TimeSpan.FromMinutes(secilenHizmet.SureDk);
                 TimeSpan randevuBitis = randevuBaslangic.Add(hizmetSuresi);
@@ -67,22 +89,19 @@ namespace FitnessApp.Controllers
                 TimeSpan hocaBaslangic = TimeSpan.Parse(secilenAntrenor.CalismaSaatiBaslangic);
                 TimeSpan hocaBitis = TimeSpan.Parse(secilenAntrenor.CalismaSaatiBitis);
 
-                // Kontrol: Başlangıç hocadan önce mi? VEYA Bitiş hocadan sonra mı?
                 if (randevuBaslangic < hocaBaslangic || randevuBitis > hocaBitis)
                 {
-                    // HATAYI NETLEŞTİREN MESAJ
                     string randevuAraligi = $"{randevuBaslangic:hh\\:mm} - {randevuBitis:hh\\:mm}";
                     string hocaAraligi = $"{hocaBaslangic:hh\\:mm} - {hocaBitis:hh\\:mm}";
 
                     TempData["Hata"] = $"<div class='text-start'><b>Saat Uyuşmazlığı!</b><br>" +
-                                       $"Sizin Randevunuz: <b>{randevuAraligi}</b> ({secilenHizmet.SureDk} dk)<br>" +
+                                       $"Sizin Randevunuz: <b>{randevuAraligi}</b><br>" +
                                        $"Hocanın Mesaisi: <b>{hocaAraligi}</b><br>" +
-                                       $"Randevunuz mesai saatleri dışına taşıyor.</div>";
-
+                                       $"Lütfen hocanın çalışma saatleri içinde bir zaman seçin.</div>";
                     return ListeleriDoldurVeDondur(randevu);
                 }
 
-                // 3. ÇAKIŞMA KONTROLÜ
+                // ÇAKIŞMA KONTROLÜ
                 DateTime baslangicZamani = randevu.TarihSaat;
                 DateTime bitisZamani = baslangicZamani.AddMinutes(secilenHizmet.SureDk);
 
@@ -97,7 +116,7 @@ namespace FitnessApp.Controllers
 
                 if (cakismaVarMi)
                 {
-                    TempData["Hata"] = "Seçtiğiniz saatte antrenörün başka bir randevusu var.";
+                    TempData["Hata"] = "Seçtiğiniz saatte antrenörün başka bir randevusu var. Lütfen başka bir saat seçin.";
                     return ListeleriDoldurVeDondur(randevu);
                 }
 
@@ -109,10 +128,12 @@ namespace FitnessApp.Controllers
                 _context.Add(randevu);
                 await _context.SaveChangesAsync();
 
-                TempData["Basarili"] = "Randevunuz oluşturuldu! Onay bekliyor.";
+                TempData["Basarili"] = "Randevunuz başarıyla oluşturuldu! Onay bekliyor.";
                 return RedirectToAction(nameof(Randevularim));
             }
 
+            // Eğer yukarıdaki kontrollere takılmadan buraya düşerse genel hata ver
+            TempData["Hata"] = "Lütfen formdaki tüm alanları doldurunuz.";
             return ListeleriDoldurVeDondur(randevu);
         }
 
