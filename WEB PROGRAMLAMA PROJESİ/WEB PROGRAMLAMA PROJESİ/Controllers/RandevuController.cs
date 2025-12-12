@@ -153,7 +153,7 @@ namespace FitnessApp.Controllers
                 .Where(r => r.UserId == user.Id)
                 .OrderByDescending(r => r.TarihSaat)
                 .ToListAsync();
-            //VİEW eklendi
+            //VİEW eklendi testler yapıldı
 
             return View(randevular);
         }
