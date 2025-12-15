@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
+// antrenor saatleri eklendi
 namespace FitnessApp.Models
 {
     public class Antrenor
