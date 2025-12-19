@@ -42,13 +42,13 @@ namespace FitnessApp.Controllers
             // Eğer kullanıcı seçim yapmazsa değer 0 gelir.
             if (randevu.AntrenorId == 0)
             {
-                TempData["Hata"] = "Lütfen listeden bir <b>Eğitmen</b> seçiniz.";
+                TempData["Hata"] = "Lütfen listeden bir eğitmen seçiniz.";
                 return ListeleriDoldurVeDondur(randevu);
             }
 
             if (randevu.HizmetId == 0)
             {
-                TempData["Hata"] = "Lütfen almak istediğiniz <b>Hizmeti</b> seçiniz.";
+                TempData["Hata"] = "Lütfen almak istediğiniz hizmeti seçiniz.";
                 return ListeleriDoldurVeDondur(randevu);
             }
             // ----------------------------------------
@@ -72,12 +72,12 @@ namespace FitnessApp.Controllers
                 }
 
                 // UZMANLIK KONTROLÜ
-                string hocaUzmanlik = secilenAntrenor.UzmanlikAlani.ToLower();
-                string hizmetAdi = secilenHizmet.Ad.ToLower();
+                string hocaUzmanlik = secilenAntrenor.UzmanlikAlani?.ToLower() ?? "";
+                string hizmetAdi = secilenHizmet.Ad?.ToLower() ?? "";
 
                 if (!hocaUzmanlik.Contains(hizmetAdi))
                 {
-                    TempData["Hata"] = $"Seçtiğiniz antrenör ({secilenAntrenor.AdSoyad}) <b>'{secilenHizmet.Ad}'</b> dersi vermiyor.<br>Uzmanlık alanı: {secilenAntrenor.UzmanlikAlani}";
+                    TempData["Hata"] = $"Seçtiğiniz eğitmen ({secilenAntrenor.AdSoyad}) '{secilenHizmet.Ad}' dersi vermiyor. Uzmanlık alanı: {secilenAntrenor.UzmanlikAlani}";
                     return ListeleriDoldurVeDondur(randevu);
                 }
 
@@ -94,10 +94,7 @@ namespace FitnessApp.Controllers
                     string randevuAraligi = $"{randevuBaslangic:hh\\:mm} - {randevuBitis:hh\\:mm}";
                     string hocaAraligi = $"{hocaBaslangic:hh\\:mm} - {hocaBitis:hh\\:mm}";
 
-                    TempData["Hata"] = $"<div class='text-start'><b>Saat Uyuşmazlığı!</b><br>" +
-                                       $"Sizin Randevunuz: <b>{randevuAraligi}</b><br>" +
-                                       $"Hocanın Mesaisi: <b>{hocaAraligi}</b><br>" +
-                                       $"Lütfen hocanın çalışma saatleri içinde bir zaman seçin.</div>";
+                    TempData["Hata"] = $"Saat uyuşmazlığı! Randevunuz: {randevuAraligi}, Eğitmenin mesaisi: {hocaAraligi}. Lütfen eğitmenin çalışma saatleri içinde bir zaman seçin.";
                     return ListeleriDoldurVeDondur(randevu);
                 }
 
@@ -110,6 +107,7 @@ namespace FitnessApp.Controllers
                     .Where(r => r.AntrenorId == randevu.AntrenorId)
                     .Where(r => r.RandevuId != randevu.RandevuId)
                     .AnyAsync(r =>
+                        r.Hizmet != null &&
                         (r.TarihSaat < bitisZamani) &&
                         (r.TarihSaat.AddMinutes(r.Hizmet.SureDk) > baslangicZamani)
                     );
@@ -122,6 +120,11 @@ namespace FitnessApp.Controllers
 
                 // KAYDET
                 var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    TempData["Hata"] = "Kullanıcı bilgisi alınamadı. Lütfen tekrar giriş yapın.";
+                    return ListeleriDoldurVeDondur(randevu);
+                }
                 randevu.UserId = user.Id;
                 randevu.OnaylandiMi = false;
 
@@ -131,7 +134,7 @@ namespace FitnessApp.Controllers
                 TempData["Basarili"] = "Randevunuz başarıyla oluşturuldu! Onay bekliyor.";
                 return RedirectToAction(nameof(Randevularim));
             }
-
+            TempData["Basarili"] = "Randevunuz başarıyla oluşturuldu! Yönetici onayı bekliyor.";
             // Eğer yukarıdaki kontrollere takılmadan buraya düşerse genel hata ver
             TempData["Hata"] = "Lütfen formdaki tüm alanları doldurunuz.";
             return ListeleriDoldurVeDondur(randevu);
@@ -147,6 +150,10 @@ namespace FitnessApp.Controllers
         public async Task<IActionResult> Randevularim()
         {
             var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             var randevular = await _context.Randevular
                 .Include(r => r.Antrenor)
                 .Include(r => r.Hizmet)

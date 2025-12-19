@@ -11,6 +11,11 @@ namespace FitnessApp.Data
             var userManager = service.GetService<UserManager<AppUser>>();
             var roleManager = service.GetService<RoleManager<IdentityRole>>();
 
+            if (userManager == null || roleManager == null)
+            {
+                throw new InvalidOperationException("UserManager or RoleManager is not available.");
+            }
+
             // 1. ROLLERİ OLUŞTUR (Admin ve Uye)
             await roleManager.CreateAsync(new IdentityRole("Admin"));
             await roleManager.CreateAsync(new IdentityRole("Uye"));

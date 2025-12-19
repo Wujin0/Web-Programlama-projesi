@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using FitnessApp.Data;
 using FitnessApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FitnessApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize] // API'ye erişim için giriş zorunlu
     public class HizmetlerApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

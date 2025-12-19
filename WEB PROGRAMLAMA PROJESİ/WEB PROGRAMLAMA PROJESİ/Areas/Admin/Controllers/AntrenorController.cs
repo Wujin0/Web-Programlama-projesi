@@ -67,9 +67,9 @@ namespace FitnessApp.Areas.Admin.Controllers
                     TempData["Basarili"] = "Antrenör başarıyla eklendi!";
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    TempData["Hata"] = "Hata: " + ex.Message;
+                    TempData["Hata"] = "Antrenör eklenirken bir hata oluştu. Lütfen tekrar deneyin.";
                 }
             }
             return View(antrenor);
@@ -114,7 +114,7 @@ namespace FitnessApp.Areas.Admin.Controllers
 
                     _context.Update(antrenor);
                     await _context.SaveChangesAsync();
-                    TempData["Basarili"] = "Antrenör güncellendi!";
+                    TempData["Basarili"] = "Antrenör başarıyla güncellendi!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -145,7 +145,7 @@ namespace FitnessApp.Areas.Admin.Controllers
             {
                 _context.Antrenorler.Remove(antrenor);
                 await _context.SaveChangesAsync();
-                TempData["Basarili"] = "Antrenör silindi!";
+                TempData["Basarili"] = "Antrenör başarıyla silindi!";
             }
             return RedirectToAction(nameof(Index));
         }

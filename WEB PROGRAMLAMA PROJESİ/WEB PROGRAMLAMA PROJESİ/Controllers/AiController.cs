@@ -80,7 +80,15 @@ namespace FitnessApp.Controllers
                         {
                             if (doc.RootElement.TryGetProperty("candidates", out JsonElement candidates) && candidates.GetArrayLength() > 0)
                             {
-                                var fullText = candidates[0].GetProperty("content").GetProperty("parts")[0].GetProperty("text").GetString();
+                                var textElement = candidates[0].GetProperty("content").GetProperty("parts")[0].GetProperty("text");
+                                var fullText = textElement.GetString();
+
+                                if (fullText == null)
+                                {
+                                    ViewBag.SonucMetni = "AI'den geçerli yanıt alınamadı.";
+                                    ViewBag.SonucVar = true;
+                                    return View();
+                                }
 
                                 string metin = fullText; // Varsayılan olarak hepsini al
                                 string resimLinki = "";
@@ -107,7 +115,7 @@ namespace FitnessApp.Controllers
                                 }
 
                                 // HTML formatına çevir
-                                ViewBag.SonucMetni = metin.Replace("**", "<b>").Replace("*", "<br>•");
+                                ViewBag.SonucMetni = metin?.Replace("**", "<b>").Replace("*", "<br>•") ?? "Yanıt işlenemedi.";
                                 ViewBag.ResimUrl = resimLinki;
                             }
                         }

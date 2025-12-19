@@ -37,7 +37,7 @@
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik</a>
                         </li>
 
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User?.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Randevu" asp-action="Al">Randevu Al</a>
@@ -53,7 +53,7 @@
                             </li>
                         }
 
-                        @if (User.IsInRole("Admin"))
+                        @if (User?.IsInRole("Admin") == true)
                         {
                             <li class="nav-item ms-lg-auto">
                                 <a class="nav-link text-warning fw-bold border border-warning rounded px-2" asp-area="Admin" asp-controller="Hizmet" asp-action="Index">YÖNETİCİ PANELİ</a>

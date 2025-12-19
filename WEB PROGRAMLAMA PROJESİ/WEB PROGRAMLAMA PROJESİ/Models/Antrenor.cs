@@ -9,11 +9,11 @@ namespace FitnessApp.Models
 
         [Required(ErrorMessage = "Ad Soyad zorunludur.")]
         [Display(Name = "Ad Soyad")]
-        public string AdSoyad { get; set; }
+        public string? AdSoyad { get; set; }
 
         [Required(ErrorMessage = "Uzmanlık alanı zorunludur.")]
         [Display(Name = "Uzmanlık Alanı")]
-        public string UzmanlikAlani { get; set; }
+        public string? UzmanlikAlani { get; set; }
 
         [Display(Name = "Fotoğraf")]
         public string? FotoUrl { get; set; }
